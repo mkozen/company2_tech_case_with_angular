@@ -16,14 +16,16 @@
           class="form-control"
           placeholder="Filter"
           (input)="handleSearchName($event)"
-          [(ngModel)]="searchValue"
+          [ngModel]="(userservice.tableState$ | async).filterTypes.searchName"
         />
-        <input
-          type="number"
-          class="form-control text-center userPageLimit"
+        <select
           (input)="handleUserPageLimit($event)"
-          [(ngModel)]="userPageLimitValue"
-        />
+          [ngModel]="(userservice.tableState$ | async).tablePaginationInfo.paginationLimit">
+          <option >1</option>
+          <option >6</option>
+          <option >10</option>
+          <option >15</option>
+        </select>
       </div>
 
       <!-- ButtonGroup -->
@@ -58,6 +60,14 @@
                 style="cursor: pointer"
                 (click)="handleUserStatusFilter('Passive')"
                 >Passive Status</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                style="cursor: pointer"
+                (click)="handleUserStatusFilter('')"
+                >All</a
               >
             </li>
           </ul>

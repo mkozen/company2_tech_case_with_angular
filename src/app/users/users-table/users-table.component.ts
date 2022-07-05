@@ -16,20 +16,16 @@ export class UsersTableComponent implements OnInit, OnDestroy {
   constructor(private userService: UsersService, private router: Router) {}
 
   ngOnInit(): void {
-    this.tableParametersChangedSub =
-      this.userService.tableParametersChanged.subscribe(
-        (newTableParameters) => {
-          this.filteredUsersTableData =
-            newTableParameters.filteredUsersTableData;
-        }
-      );
+    this.tableParametersChangedSub = this.userService.tableState$.subscribe(
+      (newTableParameters) => {
+        this.filteredUsersTableData = newTableParameters.filteredUsersTableData;
+      }
+    );
     this.userService.updateFilteredUsersTableData();
   }
 
   handleDeleteUser(ID: number): void {
     this.userService.deleteUser(ID);
-    this.router.navigate(['/users']);
-    this.userService.updateFilteredUsersTableData();
   }
 
   onAddToSelectedUsersPool(userID: number) {

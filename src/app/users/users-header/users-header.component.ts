@@ -27,7 +27,7 @@ export class UsersHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.usersCount = this.usersService.getUsers().length;
-    this.subscription = this.usersService.tableParametersChanged.subscribe(
+    this.subscription = this.usersService.tableState$.subscribe(
       (tableParamaters) => {
         this.usersCount = tableParamaters.nonFilteredUsersTableData.length;
       }

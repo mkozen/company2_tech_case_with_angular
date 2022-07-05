@@ -1,49 +1,27 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription, switchMap } from 'rxjs';
 import { UsersService } from '../../users.service';
 @Component({
   selector: 'app-users-table-pagination',
   templateUrl: './users-table-pagination.component.html',
   styleUrls: ['./users-table-pagination.component.css'],
 })
-export class UsersTablePaginationComponent implements OnInit, OnDestroy {
-  constructor(private userService: UsersService) {}
-  tablePageLength!: number;
-  totalPagesArr!: number[];
-  activePage: number = 1;
-  private tableParametersChangedSub!: Subscription;
-
+export class UsersTablePaginationComponent implements OnInit {
+  constructor(public userService: UsersService) {}
   ngOnInit(): void {
-    this.totalPagesArr = new Array(
-      this.userService.getAllTableParameters().tablePaginationInfo.tableTotalPages
-    );
-    this.tablePageLength = Math.ceil(
-      this.userService.getAllTableParameters().tablePaginationInfo
-        .tableTotalPages
-    );
-    this.activePage =
-      this.userService.getAllTableParameters().tablePaginationInfo.currentPage;
-    this.tableParametersChangedSub =
-      this.userService.tableParametersChanged.subscribe(
-        (newTableParameters: any) => {
-          this.tablePageLength = Math.ceil(
-            newTableParameters.tablePaginationInfo.tableTotalPages
-          );
-          this.totalPagesArr = new Array(
-            newTableParameters.tablePaginationInfo.tableTotalPages
-          );
-          this.activePage = newTableParameters.tablePaginationInfo.currentPage;
-        }
-      );
   }
+  lastPageNumber:number = 0;
+  totalPagesArr$  = this.userService.tableState$.pipe(
+    switchMap((state) => {
+      this.lastPageNumber = Math.ceil(state.tablePaginationInfo.tableTotalPages);
+      return of(Array.from(Array(this.lastPageNumber).keys()));
+    })
+  );
 
   handleUserCurrentPage = (pageNumber: number) => {
-    this.userService.updateTablePaginationInfoCurrentPage(pageNumber);
-    this.userService.updateTablePaginationInfoOffset();
-    this.userService.updateFilteredUsersTableData();
+    this.userService.setState('tablePaginationInfo', {
+      currentPage: pageNumber,
+    });
     // console.log('pageNumber', pageNumber);
   };
-  ngOnDestroy(): void {
-    this.tableParametersChangedSub.unsubscribe();
-  }
 }

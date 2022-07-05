@@ -3,20 +3,14 @@ import { Injectable, OnInit } from '@angular/core';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Users } from '../users/users.model';
-import { UsersService } from '../users/users.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataStorageService implements OnInit {
-  constructor(
-    private http: HttpClient,
-    private userService: UsersService,
-    private authService: AuthService
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
   ngOnInit(): void {
     // console.log('getusers', this.userService.getUsers());
   }
-  storeUsers() {
-    const users = this.userService.getUsers();
+  storeUsers(users: Users[]) {
     this.http
       .put(
         'https://ng-practice-usercrud-barisd-default-rtdb.europe-west1.firebasedatabase.app/users.json',
@@ -39,9 +33,6 @@ export class DataStorageService implements OnInit {
               userCourses: user.userCourses ? user.userCourses : [],
             };
           });
-        }),
-        tap((users: Users[]) => {
-          this.userService.setUsers(users);
         })
       );
   }

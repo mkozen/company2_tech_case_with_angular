@@ -9,7 +9,7 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent implements OnInit {
   title = 'company2_tech_case_with_angular';
 
-  constructor(private authService: AuthService) {}
+  constructor(public authService: AuthService) {}
 
   ngOnInit() {
     this.authService.autoSignIn();

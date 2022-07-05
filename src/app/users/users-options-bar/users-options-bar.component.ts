@@ -8,54 +8,33 @@ import { UsersService } from '../users.service';
   styleUrls: ['./users-options-bar.component.css'],
 })
 export class UsersOptionsBarComponent implements OnInit {
-  searchValue: string | null = null;
-  userPageLimitValue: number | null = null;
 
   constructor(
-    private userservice: UsersService,
+    public userservice: UsersService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {}
 
-  handleSearchName = (event: any) => {
-    this.userservice.updateSearchName(event.target.value);
-    this.userservice.updateFilteredUsersTableData();
+  handleSearchName = (event: any) => {    
+    this.userservice.setState('filterTypes', { searchName: event.target.value });
   };
 
   handleUserPageLimit = (event: any) => {
-    this.userservice.updateTablePaginationInfoPaginationLimit(
-      event.target.value
-    );
-    this.userservice.calculateTableTotalPages();
-    this.userservice.updateFilteredUsersTableData();
+    this.userservice.setState('tablePaginationInfo', {
+      paginationLimit: event.target.value,
+    });
   };
 
-  handleUserStatusFilter = (userNewStatusSelection: string) => {
-    this.userservice.updateUserStatusFilter(userNewStatusSelection);
-    this.userservice.updateFilteredUsersTableData();
+  handleUserStatusFilter = (userNewStatusSelection: string) => {    
+    this.userservice.setState('filterTypes', {
+      userStatusFilter: userNewStatusSelection,
+    });
   };
 
   handleClearFilters = () => {
-    this.searchValue = null;
-    this.userPageLimitValue = null;
-    this.userservice.updateSearchName('');
-    this.userservice.updateUserStatusFilter('');
-    this.userservice.updateTablePaginationInfoPaginationLimit(
-      this.userservice.getAllTableParameters().tablePaginationInfo
-        .defaultPaginationLimit
-    );
-    this.userservice.updateUsertableTotalPages(
-      Math.ceil(
-        this.userservice.getAllTableParameters().nonFilteredUsersTableData
-          .length /
-          this.userservice.getAllTableParameters().tablePaginationInfo
-            .defaultPaginationLimit
-      )
-    );
-
-    this.userservice.updateFilteredUsersTableData();
+    this.userservice.resetState();
   };
 
   onNewUser() {

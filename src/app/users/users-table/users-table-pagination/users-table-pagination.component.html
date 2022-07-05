@@ -12,8 +12,8 @@
       </a>
     </li>
     <li
-      *ngFor="let pageEL of totalPagesArr; let index = index"
-      class="page-item {{ index + 1 === activePage ? 'active' : '' }}"
+      *ngFor="let pageEL of totalPagesArr$ | async; let index = index"
+      class="page-item {{ index + 1 === (userService.tableState$ |async)?.tablePaginationInfo?.currentPage ? 'active' : '' }}"
     >
       <a
         class="page-link"
@@ -27,7 +27,7 @@
         class="page-link"
         style="cursor: pointer"
         aria-label="Next"
-        (click)="handleUserCurrentPage(tablePageLength)"
+        (click)="handleUserCurrentPage(lastPageNumber)"
       >
         <span aria-hidden="true">&raquo;</span>
       </a>

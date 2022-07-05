@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from 'src/app/auth/auth.service';
+import { UsersService } from 'src/app/users/users.service';
 import { DataStorageService } from '../data-storage.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private userAuthSub!: Subscription;
 
   constructor(
-    private dataStorageService: DataStorageService,
+    private userService: UsersService,
     private authService: AuthService
   ) {}
 
@@ -27,10 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   onSaveData() {
-    this.dataStorageService.storeUsers();
-  }
-  onFetchData() {
-    this.dataStorageService.fetchUsers().subscribe();
+    this.userService.storeUsers();
   }
 
   onSignOut() {
